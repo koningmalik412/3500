@@ -1,0 +1,20 @@
+[
+    {
+      "category": "Sports",
+      "interests": ["Football", "Boxing", "Westling", "Swimming", "Badminton", "Basketball", "Volleyball", "Billards"]
+    },
+    {
+      "category": "Music",
+      "interests": ["Country", "K-Pop", "C-Pop", "Hip-hop", "Classic", "R&B", "Techno", "Jazz"]
+    },
+    {
+      "category": "Creativity",
+      "interests": ["Photography", "Painting", "Film-Making", "Poetry", "Creative Writting", "Crafting"]
+    },
+    {
+        "category": "Entertainment",
+        "interests": ["Movies", "TV-Series", "Gaming", "K-Drama", "Board Games"]
+      }
+
+  ]
+  
