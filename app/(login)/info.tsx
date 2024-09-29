@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import RNPickerSelect from 'react-native-picker-select';
+import RNPickerSelect from 'react-native-picker-select'
+
+const mbtiPersonalities = require('../../assets/mbtiPersonalities.json');
 
 export default function InfoScreen() {
   const router = useRouter();
 
   // State to manage the editable nickname
   const [nickname, setNickname] = useState<string>('Malik');
+
+  const [selectedMBTI, setSelectedMBTI] = React.useState('');
+
+  const pickerItems = mbtiPersonalities.map((item: { type: string; nickname: string; }) => ({
+    label: `${item.type} - ${item.nickname}`,
+    value: item.type,
+  }));
+
   
   // State to manage the date of birth (web-compatible)
   const [birthday, setBirthday] = useState<string>('2001-11-03'); // YYYY-MM-DD format
@@ -53,8 +63,13 @@ export default function InfoScreen() {
       {/* Dropdown for MBTI Personality */}
       <View style={styles.inputGroup}>
         <Text style={styles.label}>MBTI Personality</Text>
-        <TextInput style={styles.input} value="INTP" editable={true} />
-      {selectedValue && <Text>Selected: {selectedValue}</Text>}
+      
+        <RNPickerSelect
+        onValueChange={(value) => setSelectedMBTI(value)}
+        placeholder={{label: 'Select an option', value:'Optional'}}
+        items={pickerItems}
+        style={pickerSelectStyles}
+      />
       </View>
 
       {/* Program Info */}
@@ -162,7 +177,7 @@ const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     backgroundColor: '#7a4dbc',
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15,    
     borderRadius: 10,
     color: 'white',
     fontSize: 16,
