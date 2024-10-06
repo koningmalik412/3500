@@ -1,12 +1,10 @@
 import { Tabs } from "expo-router";
 import {
   House,
-  BuildingApartment,
-  Ticket,
+  Compass,
   Users,
   ChatText,
 } from "phosphor-react-native";
-import { Text } from "react-native";
 
 export default () => {
   return (
@@ -26,98 +24,36 @@ export default () => {
         name="home"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, focused }) =>
-            focused ? (
-              <>
-                <House size={32} weight="fill" color={color} />
-                <Text className="font-mssbold text-purple text-xs">Home</Text>
-              </>
-            ) : (
-              <>
-                <House size={32} color={color} />
-                <Text className="font-msregular text-purple text-xs">Home</Text>
-              </>
-            ),
+          tabBarIcon: ({ color, focused }) => (
+            <House size={32} weight={focused ? "fill" : "regular"} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="communities"
+        name="nearby"
         options={{
-          title: "Communities",
-          tabBarIcon: ({ color, focused }) =>
-            focused ? (
-              <>
-                <BuildingApartment size={32} weight="fill" color={color} />
-                <Text className="font-mssbold text-purple text-xs">
-                  Community
-                </Text>
-              </>
-            ) : (
-              <>
-                <BuildingApartment size={32} color={color} />
-                <Text className="font-mssbold text-purple text-xs">
-                  Community
-                </Text>
-              </>
-            ),
+          title: "Nearby",
+          tabBarIcon: ({ color, focused }) => (
+            <Compass size={32} weight={focused ? "fill" : "regular"} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="events"
+        name="social"
         options={{
-          title: "Events",
-          tabBarIcon: ({ color, focused }) =>
-            focused ? (
-              <>
-                <Ticket size={32} weight="fill" color={color} />
-                <Text className="font-mssbold text-purple text-xs">Events</Text>
-              </>
-            ) : (
-              <>
-                <Ticket size={32} color={color} />
-                <Text className="font-mssbold text-purple text-xs">Events</Text>
-              </>
-            ),
-        }}
-      />
-      <Tabs.Screen
-        name="friends"
-        options={{
-          title: "Friends",
-          tabBarIcon: ({ color, focused }) =>
-            focused ? (
-              <>
-                <Users size={32} weight="fill" color={color} />
-                <Text className="font-mssbold text-purple text-xs">
-                  Friends
-                </Text>
-              </>
-            ) : (
-              <>
-                <Users size={32} color={color} />
-                <Text className="font-mssbold text-purple text-xs">
-                  Friends
-                </Text>
-              </>
-            ),
+          title: "Social",
+          tabBarIcon: ({ color, focused }) => (
+            <Users size={32} weight={focused ? "fill" : "regular"} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="chat"
         options={{
           title: "Chat",
-          tabBarIcon: ({ color, focused }) =>
-            focused ? (
-              <>
-                <ChatText size={32} weight="fill" color={color} />
-                <Text className="font-mssbold text-purple text-xs">Chat</Text>
-              </>
-            ) : (
-              <>
-                <ChatText size={32} color={color} />
-                <Text className="font-mssbold text-purple text-xs">Chat</Text>
-              </>
-            ),
+          tabBarIcon: ({ color, focused }) => (
+            <ChatText size={32} weight={focused ? "fill" : "regular"} color={color} />
+          ),
         }}
       />
     </Tabs>

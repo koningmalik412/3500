@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import MessageItem from '../(components)/MessageItem';
+import MessageItem from '../(components)/MessageItem'; // Assuming MessageItem is in the same directory
 
 // Define the message structure
 interface Message {
