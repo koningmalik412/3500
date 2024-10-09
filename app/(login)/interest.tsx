@@ -1,22 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import * as FileSystem from 'expo-file-system'; // Optional if using local files
-import categoriesData from '../../assets/interests.json'; // Adjust the path if necessary
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { useRouter } from "expo-router";
+import * as FileSystem from "expo-file-system"; // Optional if using local files
+import categoriesData from "../../assets/interests.json"; // Adjust the path if necessary
+import { fetchAllHobbies, fetchHobbyCategories } from "../utils/database";
 
 export default function InterestSelection() {
   const router = useRouter();
-
   // State to store interests data and selected interests
   const [categories, setCategories] = useState<any[]>([]);
+  const [interests, setInterests] = useState<any[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Load categories data from local JSON file
   useEffect(() => {
     // If you are using a local import (like categoriesData), just use it directly.
     // If using `FileSystem` API, you can fetch it dynamically here.
-    setCategories(categoriesData); // Set the categories from the imported JSON
+    const loadHobbies = async () => {
+      try {
+        const fetchedHobbies = await fetchAllHobbies();
+        setInterests(fetchedHobbies);
+        const fetchedCategories = await fetchHobbyCategories();
+        setCategories(fetchedCategories);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHobbies();
   }, []);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
 
   // Function to toggle interest selection
   const toggleInterest = (interest: string) => {
@@ -39,51 +64,64 @@ export default function InterestSelection() {
 
       {/* Title */}
       <Text style={styles.title}>
-        Select <Text style={styles.highlight}>at least 3</Text> of your interests
+        Select <Text style={styles.highlight}>at least 3</Text> of your
+        interests
       </Text>
       <Text style={styles.subtitle}>You can choose more if you like</Text>
 
       {/* Scrollable list of interests */}
       <ScrollView contentContainerStyle={styles.interestsContainer}>
-        {/* Map over categories to render each category and its interests */}
+        {/* Map over categories to render each category and its hobbies */}
+
         {categories.map((category, categoryIndex) => (
           <View key={categoryIndex}>
             {/* Category Title */}
             <Text style={styles.categoryLabel}>{category.category}</Text>
             <View style={styles.interestsRow}>
-              {/* Map over interests for each category */}
-              {category.interests.map((interest: string, interestIndex: number) => (
-                <TouchableOpacity
-                  key={interestIndex}
-                  style={[
-                    styles.interestTag,
-                    selectedInterests.includes(interest) && styles.selectedTag,
-                  ]}
-                  onPress={() => toggleInterest(interest)}
-                >
-                  <Text
-                    style={[
-                      styles.interestText,
-                      selectedInterests.includes(interest) && styles.selectedText,
-                    ]}
-                  >
-                    {interest}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              {/* Map over hobbies for each category */}
+              {interests
+                .filter((interest) => interest.category === category.category)
+                .map(
+                  (
+                    hobbyData: { id: number; hobby: string },
+                    interestIndex: number
+                  ) => (
+                    <TouchableOpacity
+                      key={hobbyData.id} // Use the unique id as the key
+                      style={[
+                        styles.interestTag,
+                        selectedInterests.includes(hobbyData.hobby) &&
+                          styles.selectedTag,
+                      ]}
+                      onPress={() => toggleInterest(hobbyData.hobby)}
+                    >
+                      <Text
+                        style={[
+                          styles.interestText,
+                          selectedInterests.includes(hobbyData.hobby) &&
+                            styles.selectedText,
+                        ]}
+                      >
+                        {hobbyData.hobby}
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                )}
             </View>
           </View>
         ))}
       </ScrollView>
 
       {/* Display number of selected interests */}
-      <Text style={styles.selectedCount}>{selectedInterests.length} selected</Text>
+      <Text style={styles.selectedCount}>
+        {selectedInterests.length}/3 selected
+      </Text>
 
       {/* Next Button */}
       <TouchableOpacity
         style={[styles.nextButton, !canProceed && styles.disabledButton]}
         disabled={!canProceed}
-        onPress={() => router.push('/ready')} // Navigate to next screen
+        onPress={() => router.push("/ready")} // Navigate to next screen
       >
         <Text style={styles.nextButtonText}>Next</Text>
       </TouchableOpacity>
@@ -96,7 +134,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#563d7c',
+    backgroundColor: "#563d7c",
   },
   backButton: {
     marginTop: 20,
@@ -104,36 +142,36 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: 24,
-    color: 'white',
+    color: "white",
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
   highlight: {
-    color: '#f8a5c2',
+    color: "#f8a5c2",
   },
   subtitle: {
     fontSize: 16,
-    color: '#c4c4c4',
+    color: "#c4c4c4",
     marginBottom: 20,
   },
   interestsContainer: {
     paddingBottom: 100, // for better scroll experience with Next button
   },
   categoryLabel: {
-    color: '#e4e4e4',
+    color: "#e4e4e4",
     fontSize: 22,
     marginBottom: 10,
   },
   interestsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 15,
   },
   interestTag: {
-    backgroundColor: '#7a4dbc',
+    backgroundColor: "#7a4dbc",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 20,
@@ -141,33 +179,33 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   selectedTag: {
-    backgroundColor: '#d4c2e6',
+    backgroundColor: "#d4c2e6",
   },
   interestText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
   },
   selectedText: {
-    color: '#563d7c',
+    color: "#563d7c",
   },
   selectedCount: {
     fontSize: 16,
-    color: '#e4e4e4',
-    textAlign: 'center',
+    color: "#e4e4e4",
+    textAlign: "center",
     marginVertical: 20,
   },
   nextButton: {
-    backgroundColor: '#b565c4',
+    backgroundColor: "#b565c4",
     paddingVertical: 15,
     borderRadius: 25,
-    alignItems: 'center',
+    alignItems: "center",
   },
   disabledButton: {
-    backgroundColor: '#a4a4a4',
+    backgroundColor: "#a4a4a4",
   },
   nextButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

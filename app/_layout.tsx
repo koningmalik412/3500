@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { DatabaseProvider } from "./DatabaseContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,14 +39,22 @@ const RootLayout = () => {
   }
 
   return (
-    <Stack>
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack>
+    <DatabaseProvider>
+      <Stack>
+        <Stack.Screen
+          name="(login)"
+          options={{
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
+    </DatabaseProvider>
   );
 };
 
