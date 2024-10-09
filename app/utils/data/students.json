@@ -1,0 +1,38 @@
+[
+    {
+        "username": "s4819188",
+        "password": "malikmalik",
+        "full_name": "Ainul Malik Zaidan Ismail",
+        "date_of_birth": "04/01/2002",
+        "study_program": "Bachelor of Computer Science",
+        "major": "Machine Learning",
+        "study_status": "Full-time"
+    },
+    {
+        "username": "s4818189",
+        "password": "password123",
+        "full_name": "Liwen Ai",
+        "date_of_birth": "04/01/2002",
+        "study_program": "Master of Interaction Design",
+        "major": "Information Technology",
+        "study_status": "Full-time"
+    },
+    {
+        "username": "s4818190",
+        "password": "password123",
+        "full_name": "Ferral Witoyo",
+        "date_of_birth": "09/02/2001",
+        "study_program": "Bachelor of Economics",
+        "major": "-",
+        "study_status": "Full-time"
+    },
+    {
+        "username": "s4818191",
+        "password": "password123",
+        "full_name": "Jinsun Matthew Augustine",
+        "date_of_birth": "04/11/2004",
+        "study_program": "Bachelor of Business Management",
+        "major": "Economics",
+        "study_status": "Full-time"
+    }
+]

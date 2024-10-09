@@ -1,0 +1,374 @@
+[
+    {
+        "category": "Sports",
+        "hobby": "Football 🏈"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Soccer (Football) ⚽"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Rugby 🏉"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Swimming 🏊"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Badminton 🏸"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Tennis 🎾"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Baseball ⚾"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Basketball 🏀"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Hockey 🏒"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Volleyball 🏐"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Cricket 🏏"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Netball 🏀"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Golf ⛳"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Boxing 🥊"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Lacrosse 🥍"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Martial Arts 🥋"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Track and Field 🏃"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Gymnastics 🤸"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Cycling 🚴"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Archery 🏹"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Rowing 🚣"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Sailing ⛵"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Surfing 🏄"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Skiing ⛷️"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Snowboarding 🏂"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Ice Skating ⛸️"
+    },
+    {
+        "category": "Sports",
+        "hobby": "Rock Climbing 🧗"
+    },
+    {
+        "category": "Exercise",
+        "hobby": "Running 🏃‍♂️"
+    },
+    {
+        "category": "Exercise",
+        "hobby": "Gym 🏋️"
+    },
+    {
+        "category": "Exercise",
+        "hobby": "Yoga 🧘"
+    },
+    {
+        "category": "Exercise",
+        "hobby": "Pilates 🧘‍♀️"
+    },
+    {
+        "category": "Exercise",
+        "hobby": "Powerlifting 🏋️‍♀️"
+    },
+    {
+        "category": "Exercise",
+        "hobby": "CrossFit 🏋️‍♂️"
+    },
+    {
+        "category": "Art",
+        "hobby": "Piano 🎹"
+    },
+    {
+        "category": "Art",
+        "hobby": "Guitar 🎸"
+    },
+    {
+        "category": "Art",
+        "hobby": "Dance 💃"
+    },
+    {
+        "category": "Art",
+        "hobby": "Drums 🥁"
+    },
+    {
+        "category": "Art",
+        "hobby": "Songwriting 🎶"
+    },
+    {
+        "category": "Art",
+        "hobby": "Music Production 🎧"
+    },
+    {
+        "category": "Art",
+        "hobby": "Violin 🎻"
+    },
+    {
+        "category": "Art",
+        "hobby": "Painting 🎨"
+    },
+    {
+        "category": "Art",
+        "hobby": "Digital Art 💻"
+    },
+    {
+        "category": "Art",
+        "hobby": "Singing 🎤"
+    },
+    {
+        "category": "Art",
+        "hobby": "Filmmaking 🎬"
+    },
+    {
+        "category": "Art",
+        "hobby": "Photography 📸"
+    },
+    {
+        "category": "Art",
+        "hobby": "Poetry 📖"
+    },
+    {
+        "category": "Art",
+        "hobby": "Creative Writing ✍️"
+    },
+    {
+        "category": "Art",
+        "hobby": "Crafting 🧶"
+    },
+    {
+        "category": "Art",
+        "hobby": "Acting 🎭"
+    },
+    {
+        "category": "Art",
+        "hobby": "Fashion 👗"
+    },
+    {
+        "category": "Art",
+        "hobby": "Saxophone 🎷"
+    },
+    {
+        "category": "Art",
+        "hobby": "Trumpet 🎺"
+    },
+    {
+        "category": "Art",
+        "hobby": "Joining a Band 🎸"
+    },
+    {
+        "category": "Art",
+        "hobby": "Video Editing 🎞️"
+    },
+    {
+        "category": "Art",
+        "hobby": "Graphic Design 🖌️"
+    },
+    {
+        "category": "Art",
+        "hobby": "3D Modeling 🖼️"
+    },
+    {
+        "category": "Music",
+        "hobby": "Pop 🎤"
+    },
+    {
+        "category": "Music",
+        "hobby": "Rock 🎸"
+    },
+    {
+        "category": "Music",
+        "hobby": "Hip Hop 🎧"
+    },
+    {
+        "category": "Music",
+        "hobby": "R&B 🎹"
+    },
+    {
+        "category": "Music",
+        "hobby": "Jazz 🎷"
+    },
+    {
+        "category": "Music",
+        "hobby": "K-Pop 🎶"
+    },
+    {
+        "category": "Music",
+        "hobby": "C-Pop 🎵"
+    },
+    {
+        "category": "Music",
+        "hobby": "J-Pop 🎵"
+    },
+    {
+        "category": "Music",
+        "hobby": "Techno 🎛️"
+    },
+    {
+        "category": "Music",
+        "hobby": "Country 🎻"
+    },
+    {
+        "category": "Music",
+        "hobby": "Indie 🎸"
+    },
+    {
+        "category": "Music",
+        "hobby": "Rap 🎤"
+    },
+    {
+        "category": "Music",
+        "hobby": "Alternative 🎸"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Movies 🎬"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "TV Shows 📺"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Video Games 🎮"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "K-Drama 🎭"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Podcasts 🎙️"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Anime 🎨"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "YouTube 📹"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "TikTok 🎵"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Twitch 🎮"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Board Games 🎲"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Reading 📚"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Manga/Manhwa 📖"
+    },
+    {
+        "category": "Entertainment",
+        "hobby": "Comics 📚"
+    },
+    {
+        "category": "Pets",
+        "hobby": "Dogs 🐶"
+    },
+    {
+        "category": "Pets",
+        "hobby": "Cats 🐱"
+    },
+    {
+        "category": "Pets",
+        "hobby": "Fish 🐟"
+    },
+    {
+        "category": "Pets",
+        "hobby": "Birds 🐦"
+    },
+    {
+        "category": "Pets",
+        "hobby": "Rabbits 🐇"
+    },
+    {
+        "category": "Activities",
+        "hobby": "Cooking 🍳"
+    },
+    {
+        "category": "Activities",
+        "hobby": "Hiking 🥾"
+    },
+    {
+        "category": "Activities",
+        "hobby": "Traveling ✈️"
+    },
+    {
+        "category": "Activities",
+        "hobby": "Concerts 🎶"
+    },
+    {
+        "category": "Activities",
+        "hobby": "Road Trips 🚗"
+    },
+    {
+        "category": "Activities",
+        "hobby": "Festivals 🎉"
+    }
+]
