@@ -1,7 +1,20 @@
 // app/home.tsx
-import React, { useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router'; // Import useRouter for navigation
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  ImageSourcePropType,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router"; // Import useRouter for navigation
+import GradientBackgroundHome from "../(components)/GradientBackgroundHome";
+import Header from "../(components)/Header";
+import { ChatCircleDots, Heart } from "phosphor-react-native";
+import { useDatabase } from "../DatabaseContext";
+import { Asset } from "expo-asset";
 
 interface Post {
   id: string;
@@ -10,6 +23,7 @@ interface Post {
   likes: number;
   comments: number;
   image: string;
+  orientation: string;
 }
 
 interface Event {
@@ -19,197 +33,277 @@ interface Event {
   image: string;
 }
 
-// Posts with 300x300 square images from via.placeholder.com
-const posts: Post[] = [
-  { id: '1', user: 'Malik Ismail', content: 'Enjoying myself', likes: 25, comments: 4, image: 'https://via.placeholder.com/300x300?text=Post1' },
-  { id: '2', user: 'Liwen Ai', content: 'Crazy night tonight', likes: 42, comments: 7, image: 'https://via.placeholder.com/300x300?text=Post2' },
-  { id: '3', user: 'Malik Ismail', content: 'Amazing day!', likes: 32, comments: 6, image: 'https://via.placeholder.com/300x300?text=Post3' },
-  { id: '4', user: 'Liwen Ai', content: 'Sunset vibes', likes: 19, comments: 3, image: 'https://via.placeholder.com/300x300?text=Post4' },
-  { id: '5', user: 'Malik Ismail', content: 'Enjoying myself', likes: 215, comments: 14, image: 'https://via.placeholder.com/300x300?text=Post5' },
-  { id: '6', user: 'Liwen Ai', content: 'Crazy night tonight', likes: 42, comments: 7, image: 'https://via.placeholder.com/300x300?text=Post6' },
-  { id: '7', user: 'Malik Ismail', content: 'Amazing day!', likes: 2, comments: 6, image: 'https://via.placeholder.com/300x300?text=Post7' },
-  { id: '8', user: 'Liwen Ai', content: 'Sunset vibes', likes: 0, comments: 0, image: 'https://via.placeholder.com/300x300?text=Post8' },
+const preloadAssets = async () => {
+  const imageAssets = Object.values(imageMap).map((image) => {
+    return Asset.fromModule(image).downloadAsync();
+  });
 
+  // Await all image preloading
+  await Promise.all(imageAssets);
+};
+
+const imageMap: { [key: string]: any } = {
+  post1: require("../../assets/images/posts/post1.jpg"),
+  post2: require("../../assets/images/posts/post2.jpg"),
+  post3: require("../../assets/images/posts/post3.jpg"),
+  post4: require("../../assets/images/posts/post4.jpg"),
+  post5: require("../../assets/images/posts/post5.jpg"),
+  post6: require("../../assets/images/posts/post6.jpg"),
+  post7: require("../../assets/images/posts/post7.jpg"),
+  post8: require("../../assets/images/posts/post8.jpg"),
+  rinadp: require("../../assets/images/dps/rinadp.jpg"),
+  alvindp: require("../../assets/images/dps/alvindp.png"),
+  event1: require("../../assets/images/event1.png"),
+  event2: require("../../assets/images/event2.png"),
+  event3: require("../../assets/images/event3.jpg"),
+};
+
+// Posts with image keys from imageMap
+const posts: Post[] = [
+  {
+    id: "1",
+    user: "Rina",
+    content: "Going out tonight",
+    likes: 25,
+    comments: 4,
+    image: "post1",
+    orientation: "portrait",
+  },
+  {
+    id: "2",
+    user: "Alvin",
+    content: "Crazy day today",
+    likes: 42,
+    comments: 7,
+    image: "post2",
+    orientation: "landscape",
+  },
+  {
+    id: "3",
+    user: "Rina",
+    content: "New dress!",
+    likes: 32,
+    comments: 6,
+    image: "post8",
+    orientation: "portrait",
+  },
+  {
+    id: "4",
+    user: "Alvin",
+    content: "Look at him",
+    likes: 19,
+    comments: 3,
+    image: "post4",
+    orientation: "portrait",
+  },
+  {
+    id: "5",
+    user: "Rina",
+    content: "Paris vibes~",
+    likes: 215,
+    comments: 14,
+    image: "post5",
+    orientation: "portrait",
+  },
+  {
+    id: "6",
+    user: "Alvin",
+    content: "Met my friends!!",
+    likes: 42,
+    comments: 7,
+    image: "post6",
+    orientation: "landscape",
+  },
+  {
+    id: "7",
+    user: "Rina",
+    content: "Taken last night",
+    likes: 2,
+    comments: 6,
+    image: "post7",
+    orientation: "portrait",
+  },
+  {
+    id: "8",
+    user: "Alvin",
+    content: "Night sky vibes",
+    likes: 0,
+    comments: 0,
+    image: "post3",
+    orientation: "landscape",
+  },
 ];
 
-// Events with 300x500 (2:1 aspect ratio) images from via.placeholder.com
+// Events with image keys from imageMap
 const events: Event[] = [
-  { id: '1', title: 'UQ Attractions Punching', description: 'If you are a new student...', image: 'https://via.placeholder.com/300x500?text=Event1' },
-  { id: '2', title: 'UQ Networking Event', description: 'A great place to meet people.', image: 'https://via.placeholder.com/300x500?text=Event2' },
-  { id: '3', title: 'Hackathon 2024', description: 'Join us for a 48-hour hackathon.', image: 'https://via.placeholder.com/300x500?text=Event3' },
+  {
+    id: "1",
+    title: "#UQ Attractions Punching",
+    description:
+      "If you are a new student, what kind of scenery have you seen on campus? Come take a picture and post it in the channel below!",
+    image: "event1",
+  },
+  {
+    id: "2",
+    title: "#Cat and Mouse Game",
+    description:
+      "The campus is hosting cat and mouse games! Join the game, team up with your friends or meet new friends live! ",
+    image: "event2",
+  },
+  {
+    id: "3",
+    title: "#UQ Hackathon 2024",
+    description:
+      "Join us for a 48-hour hackathon to win a grand prize! Gather your team and be ready to show the world what you've got!",
+    image: "event3",
+  },
 ];
 
 export default function HomeScreen() {
-  const [activeTab, setActiveTab] = useState<'Post' | 'Event'>('Post');
+  const [activeTab, setActiveTab] = useState<"Post" | "Event">("Post");
   const router = useRouter(); // Initialize router
+  const { user } = useDatabase();
+
+  useEffect(() => {
+    const loadAssets = async () => {
+      await preloadAssets();
+    };
+
+    loadAssets();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      {/* Custom Tab Header for Post and Event */}
-      <View style={styles.tabHeader}>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'Post' && styles.activeTab]}
-          onPress={() => setActiveTab('Post')}
-        >
-          <Text style={styles.tabText}>Post</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'Event' && styles.activeTab]}
-          onPress={() => setActiveTab('Event')}
-        >
-          <Text style={styles.tabText}>Event</Text>
-        </TouchableOpacity>
-      </View>
+    <GradientBackgroundHome>
+      <View className="flex-1 px-2">
+        <Header user={user} />
+        {/* Custom Tab Header for Post and Event */}
+        <View className="flex flex-row justify-around bg-white rounded-full shadow-md">
+          <TouchableOpacity
+            className={`py-1 w-1/2 flex items-center ${
+              activeTab === "Post" ? "bg-purple rounded-full" : ""
+            }`}
+            onPress={() => setActiveTab("Post")}
+          >
+            <Text
+              className={`text-sm font-msbold ${
+                activeTab === "Post" ? "text-white" : "text-purple"
+              }`}
+            >
+              Posts
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className={`py-1 w-1/2 flex items-center ${
+              activeTab === "Event" ? "bg-purple rounded-full" : ""
+            }`}
+            onPress={() => setActiveTab("Event")}
+          >
+            <Text
+              className={`text-sm font-msbold ${
+                activeTab === "Event" ? "text-white" : "text-purple"
+              }`}
+            >
+              Events
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Show "Posts" FlatList when the "Post" tab is active */}
-      {activeTab === 'Post' && (
-        <FlatList
-          data={posts}
-          keyExtractor={(item) => item.id}
-          numColumns={2} // Fixed 2 columns for posts
-          columnWrapperStyle={styles.row} // Apply some styles for spacing between columns
-          renderItem={({ item }) => (
-            <View style={styles.postContainer}>
-              {/* Wrap the Image component with TouchableOpacity for navigation */}
-              <TouchableOpacity onPress={() => router.push('/post')}>
+        {activeTab === "Post" && (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            className="flex-column mt-1"
+          >
+            {posts.map((item, index) => {
+              return (
+                <TouchableWithoutFeedback
+                  onPress={() => router.push("/post")}
+                  key={index}
+                >
+                  <View className="flex-1 m-1 bg-white p-3 rounded-2xl mt-2">
+                    <View className="flex-row items-center gap-2 mb-2">
+                      <Image
+                        source={
+                          item.user === "Rina"
+                            ? imageMap["rinadp"]
+                            : imageMap["alvindp"]
+                        }
+                        className="w-10 h-10 rounded-full border-2 border-purple"
+                      />
+                      <View className="pb-1">
+                        <Text className="font-mssbold text-xs">
+                          {item.user}
+                        </Text>
+                        <Text className="font-msregular text-[9px]">
+                          HABS | Psy
+                        </Text>
+                      </View>
+                    </View>
+
+                    <Image
+                      source={imageMap[item.image]}
+                      className={`w-full rounded-lg mb-3 ${
+                        item.orientation === "portrait" ? "h-[450px]" : "h-60"
+                      }`}
+                    />
+
+                    <Text className="text-xs font-msregular mb-2 pl-1">
+                      <Text className="font-msbold">{item.user} </Text>
+                      {item.content}
+                    </Text>
+                    <View className="flex flex-row font-msregular gap-1 items-center">
+                      <View className="flex flex-row items-center gap-1">
+                        <TouchableOpacity>
+                          <Heart size={20} />
+                        </TouchableOpacity>
+
+                        <Text>{item.likes}</Text>
+                      </View>
+
+                      <View className="flex flex-row items-center gap-1">
+                        <TouchableOpacity>
+                          <ChatCircleDots size={20} />
+                        </TouchableOpacity>
+
+                        <Text>{item.comments}</Text>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableWithoutFeedback>
+              );
+            })}
+          </ScrollView>
+        )}
+
+        {activeTab === "Event" && (
+          <ScrollView className="mt-3">
+            {events.map((item, index) => (
+              <View
+                key={index}
+                className="mb-4 mx-1 bg-white rounded-2xl shadow-md"
+              >
                 <Image
-                  source={{ uri: item.image }}
-                  style={styles.thumbnail} // Fixed size 300x300
+                  source={imageMap[item.image]}
+                  className="w-full h-48 rounded-t-2xl" // Fixed size 300x500 for event images
                 />
-              </TouchableOpacity>
-              <Text style={styles.username}>{item.user}</Text>
-              <Text style={styles.content}>{item.content}</Text>
-              <View style={styles.postFooter}>
-                <Text>❤️ {item.likes}</Text>
-                <Text>💬 {item.comments}</Text>
+                <View className="px-5 py-5">
+                  <Text className="text-lg font-msbold mb-1">{item.title}</Text>
+                  <Text className="text-sm font-msregular text-gray-500 mb-5">
+                    {item.description}
+                  </Text>
+                  <TouchableOpacity
+                    className=" bg-purple px-5 py-2 rounded-full items-center"
+                    onPress={() => router.push("/event")}
+                  >
+                    <Text className="text-sm font-msbold text-white">
+                      View Event
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          )}
-        />
-      )}
-
-      {/* Show "Events" FlatList when the "Event" tab is active */}
-      {activeTab === 'Event' && (
-        <FlatList
-          data={events}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.eventContainer}>
-              <TouchableOpacity onPress={() => router.push('/event')}>
-                <Image
-                  source={{ uri: item.image }}
-                  style={styles.eventImage} // Fixed size 300x500
-                />
-              </TouchableOpacity>
-              <Text style={styles.eventTitle}>{item.title}</Text>
-              <Text style={styles.eventDescription}>{item.description}</Text>
-              <TouchableOpacity style={styles.viewEventButton} onPress={() => router.push('/event')}>
-                <Text style={styles.viewEventText}>View Event</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      )}
-    </View>
+            ))}
+          </ScrollView>
+        )}
+      </View>
+    </GradientBackgroundHome>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: '#f2f2f2',
-  },
-  tabHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 4,
-  },
-  tabButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  activeTab: {
-    borderBottomWidth: 3,
-    borderBottomColor: '#51247A',
-  },
-  tabText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#51247A',
-  },
-  row: {
-    justifyContent: 'space-between', // Space out columns
-  },
-  postContainer: {
-    flex: 1,
-    margin: 5,
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 4,
-  },
-  thumbnail: {
-    width: '100%',
-    height: 175, // Fixed size 300x300 for post images
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  username: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  content: {
-    fontSize: 12,
-    marginBottom: 10,
-  },
-  postFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  eventContainer: {
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 4,
-  },
-  eventImage: {
-    width: '100%',
-    height: 200, // Fixed size 300x500 for event images
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  eventTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  eventDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 10,
-  },
-  viewEventButton: {
-    backgroundColor: '#51247A',
-    padding: 10,
-    borderRadius: 10,
-  },
-  viewEventText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-});

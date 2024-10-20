@@ -1,6 +1,12 @@
 import { Redirect } from "expo-router";
+import { DatabaseProvider, useDatabase } from "./DatabaseContext";
 
 const StartPage = () => {
-  return <Redirect href="/start" />;
+  const { session } = useDatabase();
+  return (
+    <DatabaseProvider>
+      <Redirect href={session ? "/home" : "/start"} />
+    </DatabaseProvider>
+  );
 };
 export default StartPage;

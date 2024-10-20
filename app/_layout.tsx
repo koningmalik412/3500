@@ -44,7 +44,19 @@ const RootLayout = () => {
         <Stack.Screen
           name="(login)"
           options={{
-            headerShown: true,
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="(pages)"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="user"
+          options={{
+            headerShown: false,
           }}
         />
         <Stack.Screen

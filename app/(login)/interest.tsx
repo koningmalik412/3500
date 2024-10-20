@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import * as FileSystem from "expo-file-system"; // Optional if using local files
-import categoriesData from "../../assets/interests.json"; // Adjust the path if necessary
-import { fetchAllHobbies, fetchHobbyCategories } from "../utils/database";
+import {
+  associateUserWithHobby,
+  fetchAllHobbies,
+  fetchHobbyCategories,
+} from "../utils/database";
+import GradientBackground from "../(components)/GradientBackground";
+import { CaretLeft, CaretRight } from "phosphor-react-native";
+import { useDatabase } from "../DatabaseContext";
 
 export default function InterestSelection() {
   const router = useRouter();
-  // State to store interests data and selected interests
   const [categories, setCategories] = useState<any[]>([]);
   const [interests, setInterests] = useState<any[]>([]);
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [selectedInterests, setSelectedInterests] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load categories data from local JSON file
+  const { user } = useDatabase();
+
   useEffect(() => {
-    // If you are using a local import (like categoriesData), just use it directly.
-    // If using `FileSystem` API, you can fetch it dynamically here.
     const loadHobbies = async () => {
       try {
         const fetchedHobbies = await fetchAllHobbies();
@@ -39,12 +36,14 @@ export default function InterestSelection() {
     loadHobbies();
   }, []);
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
+  const handleSubmit = async () => {
+    selectedInterests.map(async (interest) => {
+      await associateUserWithHobby(user.id, interest);
+    });
+    router.push("/ready");
+  };
 
-  // Function to toggle interest selection
-  const toggleInterest = (interest: string) => {
+  const toggleInterest = (interest: number) => {
     if (selectedInterests.includes(interest)) {
       setSelectedInterests(selectedInterests.filter((i) => i !== interest));
     } else {
@@ -52,160 +51,92 @@ export default function InterestSelection() {
     }
   };
 
-  // Check if the minimum number of selections (3) is met
   const canProceed = selectedInterests.length >= 3;
 
   return (
-    <View style={styles.container}>
-      {/* Back Button */}
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>{"<"}</Text>
-      </TouchableOpacity>
+    <GradientBackground>
+      <View className="flex-1 py-5 px-8">
+        {/* Back Button */}
+        <TouchableOpacity className="mt-14 mb-5" onPress={() => router.back()}>
+          <CaretLeft size={32} color="white" weight="bold" />
+        </TouchableOpacity>
 
-      {/* Title */}
-      <Text style={styles.title}>
-        Select <Text style={styles.highlight}>at least 3</Text> of your
-        interests
-      </Text>
-      <Text style={styles.subtitle}>You can choose more if you like</Text>
+        {/* Title */}
+        <Text className="text-3xl font-msbold text-white mb-4">
+          Select <Text className="text-pink">at least 3</Text> of your interests
+        </Text>
+        <Text className="text-white font-msmedium text-sm mb-2">
+          You can choose as many you like
+        </Text>
 
-      {/* Scrollable list of interests */}
-      <ScrollView contentContainerStyle={styles.interestsContainer}>
-        {/* Map over categories to render each category and its hobbies */}
-
-        {categories.map((category, categoryIndex) => (
-          <View key={categoryIndex}>
-            {/* Category Title */}
-            <Text style={styles.categoryLabel}>{category.category}</Text>
-            <View style={styles.interestsRow}>
-              {/* Map over hobbies for each category */}
-              {interests
-                .filter((interest) => interest.category === category.category)
-                .map(
-                  (
-                    hobbyData: { id: number; hobby: string },
-                    interestIndex: number
-                  ) => (
+        {/* Scrollable list of interests */}
+        <ScrollView>
+          {categories.map((category, categoryIndex) => (
+            <View key={categoryIndex}>
+              {/* Category Title */}
+              <Text className="text-white font-msbold text-xl mb-2 pt-3">
+                {category.category}
+              </Text>
+              <View className="flex flex-row flex-wrap mb-4">
+                {interests
+                  ?.filter(
+                    (interest) => interest.category === category.category
+                  )
+                  .map((hobbyData: { id: number; hobby: string }) => (
                     <TouchableOpacity
-                      key={hobbyData.id} // Use the unique id as the key
-                      style={[
-                        styles.interestTag,
-                        selectedInterests.includes(hobbyData.hobby) &&
-                          styles.selectedTag,
-                      ]}
-                      onPress={() => toggleInterest(hobbyData.hobby)}
+                      key={hobbyData.id}
+                      className={`bg-white py-1 px-3 rounded-full mr-2 mb-2 ${
+                        selectedInterests.includes(hobbyData.id)
+                          ? "bg-pink"
+                          : ""
+                      }`}
+                      onPress={() => toggleInterest(hobbyData.id)}
                     >
                       <Text
-                        style={[
-                          styles.interestText,
-                          selectedInterests.includes(hobbyData.hobby) &&
-                            styles.selectedText,
-                        ]}
+                        className={`text-purple font-msbold text-xs ${
+                          selectedInterests.includes(hobbyData.id)
+                            ? "text-white"
+                            : ""
+                        }`}
                       >
                         {hobbyData.hobby}
                       </Text>
                     </TouchableOpacity>
-                  )
-                )}
+                  ))}
+              </View>
             </View>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
 
-      {/* Display number of selected interests */}
-      <Text style={styles.selectedCount}>
-        {selectedInterests.length}/3 selected
-      </Text>
+        <View className="w-full pb-7 pt-5 flex flex-row justify-between items-center">
+          {/* Display number of selected interests */}
+          <Text className="text-white font-msbold text-lg text-center">
+            {selectedInterests.length}/3 selected
+          </Text>
 
-      {/* Next Button */}
-      <TouchableOpacity
-        style={[styles.nextButton, !canProceed && styles.disabledButton]}
-        disabled={!canProceed}
-        onPress={() => router.push("/ready")} // Navigate to next screen
-      >
-        <Text style={styles.nextButtonText}>Next</Text>
-      </TouchableOpacity>
-    </View>
+          {/* Next Button */}
+          <TouchableOpacity
+            className={`bg-pink py-2 rounded-2xl pl-5 pr-4 items-center ${
+              !canProceed ? "bg-light-purple" : ""
+            }`}
+            disabled={!canProceed}
+            onPress={handleSubmit}
+          >
+            <Text
+              className={`text-white text-lg font-bold ${
+                !canProceed ? "text-purple" : ""
+              }`}
+            >
+              Next{" "}
+              <CaretRight
+                size={20}
+                color={`${!canProceed ? "#51247A" : "white"}`}
+                weight="bold"
+              />
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </GradientBackground>
   );
 }
-
-// Styles for the component
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#563d7c",
-  },
-  backButton: {
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  backText: {
-    fontSize: 24,
-    color: "white",
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "white",
-  },
-  highlight: {
-    color: "#f8a5c2",
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#c4c4c4",
-    marginBottom: 20,
-  },
-  interestsContainer: {
-    paddingBottom: 100, // for better scroll experience with Next button
-  },
-  categoryLabel: {
-    color: "#e4e4e4",
-    fontSize: 22,
-    marginBottom: 10,
-  },
-  interestsRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 15,
-  },
-  interestTag: {
-    backgroundColor: "#7a4dbc",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-    marginRight: 10,
-    marginBottom: 10,
-  },
-  selectedTag: {
-    backgroundColor: "#d4c2e6",
-  },
-  interestText: {
-    color: "white",
-    fontSize: 16,
-  },
-  selectedText: {
-    color: "#563d7c",
-  },
-  selectedCount: {
-    fontSize: 16,
-    color: "#e4e4e4",
-    textAlign: "center",
-    marginVertical: 20,
-  },
-  nextButton: {
-    backgroundColor: "#b565c4",
-    paddingVertical: 15,
-    borderRadius: 25,
-    alignItems: "center",
-  },
-  disabledButton: {
-    backgroundColor: "#a4a4a4",
-  },
-  nextButtonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-});

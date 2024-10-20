@@ -1,22 +1,17 @@
 import { Tabs } from "expo-router";
-import {
-  House,
-  Compass,
-  Users,
-  ChatText,
-} from "phosphor-react-native";
+import { House, Compass, Users, ChatText } from "phosphor-react-native";
 
 export default () => {
   return (
     <Tabs
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarShowLabel: false,
         tabBarActiveTintColor: "#51247A",
         tabBarInactiveTintColor: "#51247A",
         tabBarStyle: {
           paddingTop: 8,
-          height: 100,
+          height: 80,
         },
       }}
     >
@@ -25,7 +20,11 @@ export default () => {
         options={{
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <House size={32} weight={focused ? "fill" : "regular"} color={color} />
+            <House
+              size={32}
+              weight={focused ? "fill" : "regular"}
+              color={color}
+            />
           ),
         }}
       />
@@ -34,7 +33,11 @@ export default () => {
         options={{
           title: "Nearby",
           tabBarIcon: ({ color, focused }) => (
-            <Compass size={32} weight={focused ? "fill" : "regular"} color={color} />
+            <Compass
+              size={32}
+              weight={focused ? "fill" : "regular"}
+              color={color}
+            />
           ),
         }}
       />
@@ -43,7 +46,11 @@ export default () => {
         options={{
           title: "Social",
           tabBarIcon: ({ color, focused }) => (
-            <Users size={32} weight={focused ? "fill" : "regular"} color={color} />
+            <Users
+              size={32}
+              weight={focused ? "fill" : "regular"}
+              color={color}
+            />
           ),
         }}
       />
@@ -52,7 +59,11 @@ export default () => {
         options={{
           title: "Chat",
           tabBarIcon: ({ color, focused }) => (
-            <ChatText size={32} weight={focused ? "fill" : "regular"} color={color} />
+            <ChatText
+              size={32}
+              weight={focused ? "fill" : "regular"}
+              color={color}
+            />
           ),
         }}
       />

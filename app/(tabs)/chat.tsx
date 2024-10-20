@@ -1,6 +1,9 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import MessageItem from '../(components)/MessageItem';
+import React from "react";
+import { View, Text, FlatList } from "react-native";
+import MessageItem from "../(components)/MessageItem";
+import GradientBackgroundHome from "../(components)/GradientBackgroundHome";
+import Header from "../(components)/Header";
+import { useDatabase } from "../DatabaseContext";
 
 // Define the message structure
 interface Message {
@@ -14,83 +17,74 @@ interface Message {
 // Sample message data
 const messagesData: Message[] = [
   {
-    id: '1',
-    name: 'Liwen Ai',
-    avatar: 'https://via.placeholder.com/50',
-    message: 'Hello! How are you?',
-    time: '9:42',
+    id: "1",
+    name: "Ferral",
+    avatar: "ferraldp.jpg",
+    message: "You still owe me money",
+    time: "10:30",
   },
   {
-    id: '2',
-    name: 'Alvin',
-    avatar: 'https://via.placeholder.com/50',
-    message: 'Hello! How are you?',
-    time: '9:42',
+    id: "7",
+    name: "Rina",
+    avatar: "rinadp.jpg",
+    message: "Wanna study together?",
+    time: "9:14",
   },
   {
-    id: '3',
-    name: 'Anna',
-    avatar: 'https://via.placeholder.com/50',
-    message: 'Hello! How are you?',
-    time: '9:42',
+    id: "2",
+    name: "Alvin",
+    avatar: "alvindp.png",
+    message: "I've submitted our assignment 👍",
+    time: "Yesterday",
   },
   {
-    id: '4',
-    name: 'Arlo',
-    avatar: 'https://via.placeholder.com/50',
-    message: 'Hello! How are you?',
-    time: '9:42',
+    id: "3",
+    name: "Sophie",
+    avatar: "sophiedp.jpg",
+    message: "See you!",
+    time: "Tuesday",
   },
   {
-    id: '5',
-    name: 'Leah',
-    avatar: 'https://via.placeholder.com/50',
-    message: 'Hello! How are you?',
-    time: '9:42',
+    id: "4",
+    name: "Liam",
+    avatar: "liamdp.jpg",
+    message: "Thats crazyy 😭😭",
+    time: "Tuesday",
   },
   {
-    id: '6',
-    name: '3500 Team',
-    avatar: 'https://via.placeholder.com/50',
-    message: 'Hello! How are you?',
-    time: '9:42',
+    id: "5",
+    name: "Jinsun",
+    avatar: "jinsondp.jpg",
+    message: "We can do it tomorrow",
+    time: "Monday",
   },
   {
-    id: '7',
-    name: '1800 Team',
-    avatar: 'https://via.placeholder.com/50',
-    message: 'Hello! How are you?',
-    time: '9:42',
+    id: "6",
+    name: "Jasmine",
+    avatar: "jasminedp.jpg",
+    message: "Alright, just lmk",
+    time: "Sunday",
   },
 ];
 
 // Messages Screen Component
 const MessagesScreen: React.FC = () => {
+  const { user } = useDatabase();
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Message</Text>
-      <FlatList
-        data={messagesData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <MessageItem item={item} />} // Reuse the MessageItem component
-      />
-    </View>
+    <GradientBackgroundHome>
+      <View className="flex-1 px-2">
+        <Header user={user} />
+        <Text className="text-2xl font-msbold text-purple mb-4 px-4">
+          Message
+        </Text>
+        <FlatList
+          data={messagesData}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <MessageItem item={item} />} // Reuse the MessageItem component
+        />
+      </View>
+    </GradientBackgroundHome>
   );
 };
-
-// Styles for the Messages screen
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f2f2f2',
-    padding: 20,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#51247A',
-    marginBottom: 15,
-  },
-});
 
 export default MessagesScreen;

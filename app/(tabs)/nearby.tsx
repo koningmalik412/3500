@@ -1,12 +1,24 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text } from "react-native";
+import React from "react";
+import Maps from "../(components)/maps";
+import GradientBackgroundHome from "../(components)/GradientBackgroundHome";
+import Header from "../(components)/Header";
+import { useDatabase } from "../DatabaseContext";
 
-const Events = () => {
+const nearby = () => {
+  const { user } = useDatabase();
+
   return (
-    <View>
-      <Text>Nearby</Text>
-    </View>
-  )
-}
+    <GradientBackgroundHome>
+      <View className="flex-1">
+        <View className="px-2">
+          <Header user={user} />
+        </View>
 
-export default Events
+        <Maps />
+      </View>
+    </GradientBackgroundHome>
+  );
+};
+
+export default nearby;

@@ -1,131 +1,68 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons'; // For icons like heart, comment
+import React from "react";
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { useRouter } from "expo-router";
+import GradientBackgroundHome from "../(components)/GradientBackgroundHome";
+import { Heart, ChatCircleDots, CaretLeft } from "phosphor-react-native";
 
 export default function EventScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Header section */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="chevron-back-outline" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Event</Text>
-      </View>
-
-      {/* Event title and image */}
-      <View style={styles.eventContent}>
-        <Text style={styles.eventTitle}># UQ Attractions Punching</Text>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/500x300?text=Event+Image' }} // Placeholder event image
-          style={styles.eventImage}
-        />
-        <Text style={styles.eventDescription}>
-          If you are a new student, what kind of scenery have you seen on campus? Come take a picture and post it in the channel below!
-        </Text>
-      </View>
-
-      {/* Reactions section */}
-      <View style={styles.reactions}>
-        <View style={styles.reactionItem}>
-          <Ionicons name="heart-outline" size={20} color="black" />
-          <Text style={styles.reactionText}>25</Text>
+    <GradientBackgroundHome>
+      <ScrollView className="flex-grow px-4 mt-16">
+        {/* Header section */}
+        <View className="flex-row items-center justify-between mb-4">
+          <TouchableOpacity onPress={() => router.back()}>
+            <CaretLeft size={32} />
+          </TouchableOpacity>
+          <Text className="text-lg font-msbold">Event</Text>
+          <View className="w-6"></View>
         </View>
-        <Text style={styles.likedBy}>
-          Liked by <Text style={styles.highlight}>Liwen Ai</Text> and others
-        </Text>
-        <View style={[styles.reactionItem, styles.chatBubble]}>
-          <Ionicons name="chatbubble-outline" size={20} color="black" />
-          <Text style={styles.reactionText}>4</Text>
-        </View>
-      </View>
 
-      {/* Comments section */}
-      <View style={styles.comments}>
-        <View style={styles.commentItem}>
-          <Text style={styles.commentUser}>Liwen Ai:</Text>
-          <Text style={styles.commentText}>qnmlgb!</Text>
+        {/* Event title and image */}
+        <View className="mb-4">
+          <Text className="text-2xl font-bold text-purple mb-2">
+            # UQ Attractions Punching
+          </Text>
+          <View className="bg-white rounded-2xl mb-4">
+            <Image
+              source={require("../../assets/images/event1.png")} // Placeholder event image
+              className="w-full h-48 rounded-t-2xl"
+            />
+            <Text className="text-sm p-5 font-msregular rounded-lg">
+              If you are a new student, what kind of scenery have you seen on
+              campus? Come take a picture and post it in the channel below!
+            </Text>
+          </View>
+
+          <Text className="text-xs font-msregular ">
+            2:25 PM - 11 September 2024
+          </Text>
         </View>
-      </View>
-    </ScrollView>
+
+        {/* Reactions section */}
+        <View className="flex-row items-center mb-4">
+          <View className="flex-row items-center mr-2">
+            <Heart size={20} color="black" />
+            <Text className="ml-1 font-msregular">25</Text>
+          </View>
+          <Text className="font-msregular pr-4">
+            Liked by <Text className="font-msbold">Liwen Ai</Text> and others
+          </Text>
+          <View className="flex-row items-center">
+            <ChatCircleDots size={20} color="black" />
+            <Text className="ml-1 font-msregular">4</Text>
+          </View>
+        </View>
+
+        {/* Comments section */}
+        <View className="mb-4">
+          <View className="flex-row mb-1">
+            <Text className="font-msbold mr-1">Liwen Ai:</Text>
+            <Text className="font-msregular">Cool!</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </GradientBackgroundHome>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 15,
-    backgroundColor: '#f2f2f2',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  eventContent: {
-    marginBottom: 15,
-  },
-  eventTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#51247A',
-    marginBottom: 10,
-  },
-  eventImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  eventDescription: {
-    fontSize: 14,
-    color: '#777',
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 10,
-  },
-  reactions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: 15,
-  },
-  reactionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 5,
-  },
-  reactionText: {
-    marginLeft: 5,
-  },
-  likedBy: {
-    fontSize: 13,
-    color: '#777',
-    paddingRight: 15,
-  },
-  highlight: {
-    fontWeight: 'bold',
-  },
-  comments: {
-    marginBottom: 15,
-  },
-  commentItem: {
-    flexDirection: 'row',
-    marginBottom: 5,
-  },
-  commentUser: {
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  commentText: {
-    fontSize: 14,
-  },
-});

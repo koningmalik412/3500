@@ -1,67 +1,104 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Friends from '../(components)/Friends'; 
-import Groups from '../(components)/Groups'; 
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import Friends from "../(components)/Friends";
+import Groups from "../(components)/Groups";
+import GradientBackgroundHome from "../(components)/GradientBackgroundHome";
+import Header from "../(components)/Header";
+import { useDatabase } from "../DatabaseContext";
+import { fetchCompatible } from "../utils/fetchCompatible";
 
-export default function PeopleGroupScreen() {
-  const [activeTab, setActiveTab] = useState<'People' | 'Groups' >('People');
-
-  return (
-    <View style={styles.container}>
-      {/* Tab Header */}
-      <View style={styles.tabHeader}>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'People' && styles.activeTab]}
-          onPress={() => setActiveTab('People')}
-        >
-          <Text style={styles.tabText}>People</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'Groups' && styles.activeTab]}
-          onPress={() => setActiveTab('Groups')}
-        >
-          <Text style={styles.tabText}>Group</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* People Tab */}
-      {activeTab === 'People' && <Friends />}
-      
-      {/* Groups Tab */}
-      {activeTab === 'Groups' && <Groups />}
-    </View>
-  );
+interface User {
+  bio: string | null;
+  created_at: string;
+  date_of_birth: string;
+  ethnicity: string | null;
+  faculty: string;
+  friends: number;
+  full_name: string;
+  gender: string | null;
+  id: number;
+  is_initialized: number;
+  major: string;
+  mbti: string | null;
+  nickname: string | null;
+  password: string;
+  profile_picture: string;
+  program_code: string;
+  student_number: string;
+  study_program: string;
+  study_status: string;
+  username: string;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: '#f2f2f2',
-  },
-  tabHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 4,
-  },
-  tabButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  activeTab: {
-    borderBottomWidth: 3,
-    borderBottomColor: '#51247A',
-  },
-  tabText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#51247A',
-  },
-});
+interface Interest {
+  category: string;
+  hobby: string;
+  id: number;
+}
+
+interface CompatibleUser {
+  user: User;
+  similarInterests: Interest[];
+}
+
+export default function PeopleGroupScreen() {
+  const [activeTab, setActiveTab] = useState<"People" | "Communities">(
+    "People"
+  );
+  const [compatibleList, setCompatibleList] = useState<CompatibleUser[]>([]);
+
+  const { user } = useDatabase();
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      setCompatibleList(await fetchCompatible(user));
+    };
+
+    loadUsers();
+  }, []);
+
+  return (
+    <GradientBackgroundHome>
+      <View className="flex-1 px-2">
+        <Header user={user} />
+        {/* Tab Header */}
+        <View className="flex flex-row justify-around bg-white rounded-full shadow-md">
+          <TouchableOpacity
+            className={`py-1 w-1/2 flex items-center ${
+              activeTab === "People" ? "bg-purple rounded-full" : ""
+            }`}
+            onPress={() => setActiveTab("People")}
+          >
+            <Text
+              className={`text-sm font-msbold ${
+                activeTab === "People" ? "text-white" : "text-purple"
+              }`}
+            >
+              People
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className={`py-1 w-1/2 flex items-center ${
+              activeTab === "Communities" ? "bg-purple rounded-full" : ""
+            }`}
+            onPress={() => setActiveTab("Communities")}
+          >
+            <Text
+              className={`text-sm font-msbold ${
+                activeTab === "Communities" ? "text-white" : "text-purple"
+              }`}
+            >
+              Communities
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* People Tab */}
+        {activeTab === "People" && <Friends userList={compatibleList} />}
+
+        {/* Communities Tab */}
+        {activeTab === "Communities" && <Groups />}
+      </View>
+    </GradientBackgroundHome>
+  );
+}

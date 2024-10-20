@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { initializeDatabase } from "./utils/database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Create a context
 const DatabaseContext = createContext<any | null>(null);
@@ -13,6 +14,48 @@ const DatabaseContext = createContext<any | null>(null);
 // DatabaseProvider component
 export const DatabaseProvider = ({ children }: { children: ReactNode }) => {
   const [db, setDb] = useState<any>(null); // Assuming you manage your database state here
+  const [session, setSession] = useState("");
+  const [user, setUser] = useState({});
+
+  const saveSession = async (token: string) => {
+    try {
+      await AsyncStorage.setItem("userToken", token);
+      setSession(token);
+    } catch (error) {
+      console.error("Failed to save session", error);
+    }
+  };
+
+  // Load session from AsyncStorage
+  const loadSession = async () => {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+      if (token) {
+        setSession(token);
+      }
+    } catch (error) {
+      console.error("Failed to load session", error);
+    }
+  };
+
+  // Clear session
+  const clearSession = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken");
+      setSession("");
+    } catch (error) {
+      console.error("Failed to clear session", error);
+    }
+  };
+
+  const loadUser = (user: {}) => {
+    setUser(user);
+    console.log("User set as:", user);
+  };
+
+  const clearUser = () => {
+    setUser({});
+  };
 
   // Initialize or manage your database here
   useEffect(() => {
@@ -26,10 +69,22 @@ export const DatabaseProvider = ({ children }: { children: ReactNode }) => {
     };
 
     setupDatabase();
+    loadSession();
   }, []);
 
   return (
-    <DatabaseContext.Provider value={{ db, setDb }}>
+    <DatabaseContext.Provider
+      value={{
+        db,
+        setDb,
+        session,
+        saveSession,
+        clearSession,
+        user,
+        loadUser,
+        clearUser,
+      }}
+    >
       {children}
     </DatabaseContext.Provider>
   );

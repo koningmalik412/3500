@@ -1,22 +1,61 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // For icons like heart, comment
-import { useRouter } from 'expo-router';
-import MessageLine from '../(components)/MessageLine';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // For icons like heart, comment
+import { useRouter } from "expo-router";
+import MessageLine from "../(components)/MessageLine";
+import GradientBackgroundHome from "../(components)/GradientBackgroundHome";
 
 // Sample chat data
 const messagesData = [
-  { id: '1', message: 'Hello! How are you?', isSender: false, avatar: 'https://via.placeholder.com/50' },
-  { id: '2', message: "I'm fine. Thank you. And you?", isSender: true, avatar: 'https://via.placeholder.com/50' },
-  { id: '3', message: 'Hello! How are you?', isSender: false, avatar: 'https://via.placeholder.com/50' },
-  { id: '4', message: "I'm fine. Thank you. And you?", isSender: true, avatar: 'https://via.placeholder.com/50' },
-  { id: '5', message: 'Hello! How are you?', isSender: false, avatar: 'https://via.placeholder.com/50' },
-  { id: '6', message: "I'm fine. Thank you. And you?", isSender: true, avatar: 'https://via.placeholder.com/50' },
+  {
+    id: "1",
+    message: "Good morning!",
+    isSender: false,
+    avatar: "rinadp.jpg",
+  },
+  {
+    id: "2",
+    message: "Good morning to you too",
+    isSender: true,
+    avatar: "malikdp.jpeg",
+  },
+  {
+    id: "3",
+    message: "Did you just wake up?",
+    isSender: false,
+    avatar: "rinadp.jpg",
+  },
+  {
+    id: "4",
+    message: "Yes, I did",
+    isSender: true,
+    avatar: "malikdp.jpeg",
+  },
+  {
+    id: "5",
+    message: "Omg, me too!",
+    isSender: false,
+    avatar: "rinadp.jpg",
+  },
+  {
+    id: "6",
+    message: "Wanna study together?",
+    isSender: true,
+    avatar: "malikdp.jpeg",
+  },
 ];
 
 const ActiveChat: React.FC = () => {
   const router = useRouter();
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
 
   const handleBackPress = () => {
     router.back();
@@ -25,106 +64,61 @@ const ActiveChat: React.FC = () => {
   const handleSend = () => {
     if (newMessage.trim()) {
       // Logic to send the message and update the chat list goes here
-      setNewMessage('');
+      setNewMessage("");
     }
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleBackPress}>
-          <Text>
-            <Ionicons name="chevron-back-outline" size={30} color="#fff" /> {/* Back icon */}
-          </Text>
-        </TouchableOpacity>
-        <Text style={styles.chatTitle}>Liwen Ai</Text>
-      </View>
+    <GradientBackgroundHome>
+      <View className="flex-1">
+        {/* Header */}
+        <View className="flex-row items-center p-3 bg-purple pt-14">
+          <TouchableOpacity onPress={handleBackPress}>
+            <Text>
+              <Ionicons name="chevron-back-outline" size={30} color="#fff" />{" "}
+              {/* Back icon */}
+            </Text>
+          </TouchableOpacity>
+          <Text className="text-white font-msbold text-lg ml-4">Rina</Text>
+        </View>
 
-      {/* Messages List */}
-      <FlatList
-        data={messagesData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <MessageLine
-            message={item.message}
-            isSender={item.isSender}
-            avatar={item.avatar}
-          />
-        )}
-        style={styles.chatList}
-        contentContainerStyle={styles.chatListContainer} // Align messages at the top
-      />
-
-      {/* Input field */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"} // Ensure keyboard behavior is correct
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0} // Offset for iOS to prevent overlapping with keyboard
-        style={styles.inputContainer}
-      >
-        <TextInput
-          style={styles.input}
-          placeholder="Type a message..."
-          value={newMessage}
-          onChangeText={(text) => setNewMessage(text)}
+        {/* Messages List */}
+        <FlatList
+          data={messagesData}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <MessageLine
+              message={item.message}
+              isSender={item.isSender}
+              avatar={item.avatar}
+            />
+          )}
+          className="flex-1 p-3"
+          contentContainerStyle={{ justifyContent: "flex-start" }} // Align messages at the top
         />
-        <TouchableOpacity onPress={handleSend} style={styles.inputButton}>
-          <Text>
-            <Ionicons name="send" size={28} color="#51247A" /> {/* Send Button Icon */}
-          </Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </View>
+
+        {/* Input field */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+          className="flex-row items-center p-3 bg-white border-t border-gray-300"
+        >
+          <TextInput
+            className="flex-1 p-3 border border-gray-300 font-msregular rounded-full mx-3 mb-6"
+            placeholder="Type a message..."
+            value={newMessage}
+            onChangeText={(text) => setNewMessage(text)}
+          />
+          <TouchableOpacity onPress={handleSend} className="mb-5 mx-2">
+            <Text>
+              <Ionicons name="send" size={28} color="#51247A" />{" "}
+              {/* Send Button Icon */}
+            </Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </View>
+    </GradientBackgroundHome>
   );
 };
-
-// Styles for the page
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f2f2f2',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#51247A',
-  },
-  backButton: {
-    marginRight: 10,
-  },
-  chatTitle: {
-    color: '#fff',
-    fontSize: 20,
-  },
-  chatList: {
-    flex: 1,
-    padding: 10,
-  },
-  chatListContainer: {
-    justifyContent: 'flex-start', // Align messages at the top
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-  },
-  input: {
-    flex: 1,
-    padding: 10,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 20,
-    marginHorizontal: 10,
-    marginBottom: 25,
-  },
-  inputButton: {
-    marginBottom: 20,
-    marginHorizontal:10
-  },
-});
 
 export default ActiveChat;

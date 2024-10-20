@@ -29,8 +29,11 @@ export const initializeDatabase = async () => {
           username TEXT NOT NULL UNIQUE,
           password TEXT NOT NULL, -- Hash the password before storing
           full_name TEXT,
+          student_number TEXT,
           date_of_birth DATE,
           study_program TEXT,
+          program_code TEXT,
+          faculty TEXT,
           major TEXT,
           study_status TEXT,
           nickname TEXT,
@@ -38,13 +41,15 @@ export const initializeDatabase = async () => {
           bio TEXT,
           ethnicity TEXT,
           gender TEXT,
-          home_country TEXT,
+          is_initialized BOOLEAN,
+          friends INTEGER,
+          profile_picture TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE IF NOT EXISTS hobbies (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          hobby TEXT NOT NULL,
+          hobby TEXT NOT NULL UNIQUE,
           category TEXT NOT NULL
       );
 
@@ -105,14 +110,20 @@ const insertInitialUsers = async (db) => {
       const hashedPassword = await hashPassword(user.password);
 
       await db.runAsync(
-        "INSERT INTO users (username, password, full_name, date_of_birth, study_program, major, study_status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO users (username, student_number, password, full_name, date_of_birth, study_program, program_code, faculty, major, study_status, profile_picture, friends, is_initialized) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         user.username,
+        user.student_number,
         hashedPassword, // Ensure to hash passwords before storing
         user.full_name,
         user.date_of_birth,
         user.study_program,
+        user.program_code,
+        user.faculty,
         user.major,
-        user.study_status
+        user.study_status,
+        user.profile_picture,
+        user.friends,
+        user.is_initialized
       );
       console.log(`Inserted user: ${user.username}`);
     } catch (error) {
@@ -161,7 +172,7 @@ export const associateUserWithHobby = async (userId, hobbyId) => {
 };
 
 // Fetch all hobbies for a user
-export const fetchHobbiesByUserId = async (userId) => {
+export const fetchHobbiesByUsername = async (username) => {
   const db = await openDatabase();
 
   try {
@@ -169,9 +180,10 @@ export const fetchHobbiesByUserId = async (userId) => {
       `
       SELECT h.* FROM hobbies h
       JOIN user_hobbies uh ON h.id = uh.hobby_id
-      WHERE uh.user_id = ?
+      JOIN users u ON uh.user_id = u.id  -- Ensure you have a users table to join with
+      WHERE u.username = ?
     `,
-      [userId]
+      [username]
     );
     console.log("Fetched hobbies for user:", hobbies);
     return hobbies;
@@ -220,7 +232,11 @@ export const updateUser = async (id, updates) => {
 
   try {
     await db.runAsync(query, ...values);
-    console.log(`User with ID ${id} updated`);
+    console.log(
+      `User with ID ${id} updated: ${fields.join(", ")} set to ${values.join(
+        ", "
+      )}`
+    );
   } catch (error) {
     console.error("Error updating user:", error);
     throw error;
@@ -253,6 +269,18 @@ export const deleteHobbyById = async (id) => {
   }
 };
 
+export const deleteHobbyByUserId = async (userId) => {
+  const db = await openDatabase();
+
+  try {
+    await db.runAsync("DELETE FROM user_hobbies WHERE user_id = ?", [userId]);
+    console.log(`Hobby with UserId ${userId} deleted`);
+  } catch (error) {
+    console.error("Error deleting hobby:", error);
+    throw error;
+  }
+};
+
 export const deleteAllHobbies = async () => {
   const db = await openDatabase();
 
@@ -262,6 +290,19 @@ export const deleteAllHobbies = async () => {
     console.log("All hobbies deleted");
   } catch (error) {
     console.error("Error deleting all hobbies:", error);
+    throw error;
+  }
+};
+
+export const deleteAllUsers = async () => {
+  const db = await openDatabase();
+
+  try {
+    // Using runAsync for delete operation
+    await db.runAsync("DELETE FROM users");
+    console.log("All users deleted");
+  } catch (error) {
+    console.error("Error deleting all users:", error);
     throw error;
   }
 };
@@ -277,6 +318,23 @@ export const fetchAllUsers = async () => {
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
+  }
+};
+
+// Fetch a user by username
+export const fetchUserByUsername = async (username) => {
+  const db = await openDatabase();
+
+  try {
+    const user = await db.getFirstAsync(
+      "SELECT * FROM users WHERE username = ?",
+      [username]
+    );
+    console.log("Fetched user:", user);
+    return user; // Will be null if no user is found
+  } catch (error) {
+    console.error("Error fetching user by username:", error);
+    throw error; // Propagate the error for handling in the calling code
   }
 };
 
@@ -318,6 +376,20 @@ export const fetchEachUser = async () => {
     }
   } catch (error) {
     console.error("Error iterating users:", error);
+    throw error;
+  }
+};
+
+export const resetTables = async () => {
+  const db = await openDatabase();
+
+  try {
+    await db.runAsync("DROP TABLE user_hobbies");
+    await db.runAsync("DROP TABLE users");
+    await db.runAsync("DROP TABLE hobbies");
+    console.log("All tables dropped");
+  } catch (error) {
+    console.error("Error dropping user table:", error);
     throw error;
   }
 };

@@ -1,120 +1,86 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Link } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import GradientBackground from "../(components)/GradientBackground";
+import { useDatabase } from "../DatabaseContext";
+import { fetchUserByUsername, resetTables } from "../utils/database";
+import { verifyPassword } from "../utils/passwordHash";
 
 const LoginScreen = () => {
-  const [studentId, setStudentId] = useState('');
-  const [password, setPassword] = useState('');
+  const [studentId, setStudentId] = useState("s4819215");
+  const [password, setPassword] = useState("password123");
+
+  const router = useRouter();
+  const { saveSession, loadUser } = useDatabase();
+
+  const handleLogin = async () => {
+    const user = await fetchUserByUsername(studentId);
+
+    if (user && (await verifyPassword(password, user.password))) {
+      await saveSession(studentId);
+      loadUser(user);
+      user.is_initialized ? router.push("/home") : router.push("/info");
+    } else {
+      Alert.alert("Login Failed", "Invalid username or password");
+    }
+  };
 
   return (
-    <ImageBackground
-      style={styles.container}
-      source={{uri: 'https://your-background-image-url.com'}}
-    >
-      <View style={styles.content}>
-        <Text style={styles.title}>
-          <Text style={styles.bold}>UQ</Text>Plaza
-        </Text>
-        {/* Student ID Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons name="person-outline" size={20} color="#6d6d6d" />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your student ID"
-            value={studentId}
-            onChangeText={setStudentId}
-            placeholderTextColor="#c4c4c4"
-          />
-        </View>
+    <GradientBackground>
+      <View className="flex-1 justify-center items-center ">
+        <View className="w-[85%] p-5 items-center">
+          <Text className="font-msmedium text-white text-5xl mb-20">
+            <Text className="font-msxbold">UQ</Text>Plaza
+          </Text>
 
-        {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed-outline" size={20} color="#6d6d6d" />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-            placeholderTextColor="#c4c4c4"
-          />
-        </View>
+          {/* Student ID Input */}
+          <View className="flex-row items-center bg-white rounded-2xl px-4 py-3 mb-5 w-full">
+            <Ionicons name="person-outline" size={20} color="#8B8B8B" />
+            <TextInput
+              className="ml-3 font-msregular text-sm flex-1 text-gray-600"
+              placeholder="Enter your student ID"
+              value={studentId}
+              onChangeText={setStudentId}
+              placeholderTextColor="#8B8B8B"
+              autoCapitalize="none"
+            />
+          </View>
 
-        {/* Trouble Logging In */}
-        <TouchableOpacity>
-          <Text style={styles.forgotText}>Trouble logging in?</Text>
-        </TouchableOpacity>
+          {/* Password Input */}
+          <View className="flex-row items-center bg-white rounded-2xl px-4 py-3 mb-7 w-full">
+            <Ionicons name="lock-closed-outline" size={20} color="#8B8B8B" />
+            <TextInput
+              className="ml-3 font-msregular text-sm flex-1 text-black"
+              placeholder="Enter your password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={true}
+              placeholderTextColor="#8B8B8B"
+              autoCapitalize="none"
+            />
+          </View>
 
-        {/* Login Button */}
-        <Link href="/info" asChild>
-          <TouchableOpacity style={styles.loginButton}>
-            <Text style={styles.loginButtonText}>Login</Text>
+          {/* Trouble Logging In */}
+          <TouchableOpacity>
+            <Text className="text-white font-msregular underline mt-2 mb-10">
+              Trouble logging in?
+            </Text>
           </TouchableOpacity>
-        </Link>
+
+          {/* Login Button */}
+          <TouchableOpacity
+            className="bg-pink rounded-2xl py-3 w-full items-center"
+            onPress={handleLogin}
+          >
+            <Text className="text-white font-msbold text-lg font-bold">
+              Login
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </ImageBackground>
+    </GradientBackground>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#563d7c', // Background gradient color (or use ImageBackground)
-  },
-  content: {
-    width: '90%',
-    padding: 20,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 36,
-    color: 'white',
-    marginBottom: 40,
-  },
-  bold:{
-    fontWeight: 'bold',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginBottom: 20,
-    width: '100%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  input: {
-    marginLeft: 10,
-    fontSize: 16,
-    flex: 1,
-    color: '#6d6d6d',
-  },
-  forgotText: {
-    color: '#c4c4c4',
-    marginTop: 10,
-    marginBottom: 30,
-  },
-  loginButton: {
-    backgroundColor: '#b565c4',
-    borderRadius: 25,
-    paddingVertical: 15,
-    width: '100%',
-    alignItems: 'center',
-  },
-  loginButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
 
 export default LoginScreen;
